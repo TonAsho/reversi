@@ -39,7 +39,7 @@
             <span><i class="fab fa-twitter"></i></span>
           </div>
       </div>
-      <!-- <p style="color: white;">入場者数: <span id="userCount">0</span>人</p> -->
+      <p style="color: white;">入場者数: <span id="userCount">0</span>人</p>
     </div>
 
     <div id="wait" class="wait" style="display: none;">
@@ -143,14 +143,6 @@
 
   </body>
   <script type="text/javascript" src="/javascripts/script.js"></script>
-  <script>
-    document.getElementById("start").addEventListener("click", (e) => {
-      document.getElementById("main").style.display = "none";
-      document.getElementById("wait").style.display = "block";
-    })
-    document.getElementById("back").addEventListener("click", (e) => {
-      document.getElementById("main").style.display = "block";
-      document.getElementById("wait").style.display = "none";
-    })
-  </script>
+  <script src="socket.io/socket.io.js"></script>
+  <script type="text/javascript" src="/javascripts/client.js"></script>
 </html>

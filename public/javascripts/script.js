@@ -9,6 +9,8 @@ let field = [ // "1" is black, "-1" is white;
     [0,0,0,0,0,0,0,0],
 ];
 let turn = 1; // black
+let s = 1; //先手:１、　後手:-1
+let ok = false;
 let H = 8, W = 8;
 const moveH = [0, 0, 1, -1, 1, 1, -1, -1];
 const moveW = [1, -1, 0, 0, 1, -1, -1, 1];
@@ -17,6 +19,10 @@ let hh, ww, cnt, notPut = false, number = 4;
 let can_turn = [], now = []; // ひっくり返せる駒のID
 
 function yech(id) { 
+    if(turn != s && !ok) {
+        alert("相手の手番です！");
+        return;
+    }
     let h = Math.floor(id / 8), w = id % 8;
     if(w === 0) w = 8, h--;
     w--;
@@ -33,6 +39,7 @@ function yech(id) {
         can_turn = [], now = [];
         putMark();
         number++;
+        utu(id);
         if(number === 64) finish();
     }
     else {
@@ -113,7 +120,7 @@ function putMark() {
         }
         if(turn === 1) turn = -1;
         else turn = 1;
-        alert("置けまへんのでパスします！");
+        alert("置けまへんので相手がパスしました！");
         notPut = true;
         putMark();
     } else notPut = false;
@@ -131,4 +138,5 @@ function finish() {
         else if(field[i][j] === -1) white++;
     }
     alert("今から作る");
+    
 }
