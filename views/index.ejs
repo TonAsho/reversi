@@ -1,11 +1,156 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= title %></title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ラムオセロ</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
   </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+  <body class="body">
+    <div class="main" id="main" style="display: block;">
+      <div class="logo">
+          <h1>Ramオセロ</h1>
+          <p style="font-size: 15px;">ただいま使用できるサービスはオンライン対局のみとなっております。</p>
+      </div>
+      <div class="buttons">
+          <div class="wrap" id="start">
+              <button class="button n" style="margin: 6%;"><i class="fas fa-chess-board fa-spin" style="margin: 5%;"></i>対局開始</button>
+          </div>
+          <div class="wrap">
+              <button class="button n1" style="margin: 6%;" onclick="botGame()"><i class="fas fa-eye" style="margin: 3%;"></i>ボットと対戦する</button>
+          </div>
+          <div class="wrap">
+              <button class="button n2" style="margin: 6%;" onclick="userPage()" ><i class="fas fa-user" style="margin: 3%;"></i>マイページ</button>
+          </div>
+      </div>
+      <div class="wrapper">
+          <div class="icon home">
+              <div class="tooltip">home</div>
+              <span><i class="fas fa-home"></i></span>
+          </div>
+          <div class="icon instagram">
+            <div class="tooltip">観戦</div>
+            <span><i class="fas fa-eye"></i></span>
+          </div>
+          <div class="icon twitter">
+            <div class="tooltip">Twitter</div>
+            <span><i class="fab fa-twitter"></i></span>
+          </div>
+      </div>
+      <!-- <p style="color: white;">入場者数: <span id="userCount">0</span>人</p> -->
+    </div>
+
+    <div id="wait" class="wait" style="display: none;">
+      <div class="main">
+        <div class="load">
+          <h1 class="number">マッチング中</h1>
+          <i class="fas fa-spinner fa-spin fa-5x" style="color: white;"></i>
+          <h2 class="number" id="userCount">55</h2>
+          <div class="wrapper">
+            <div class="icon back" id="back">
+              <div class="tooltip">戻る</div>
+              <span><i class="fas fa-long-arrow-alt-left"></i></span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="border" id="border" style="display: none;">
+      <div class="content">
+          <div class="ban" id="1" onclick="yech(this.id)"></div>
+          <div class="ban" id="2" onclick="yech(this.id)"></div>
+          <div class="ban" id="3" onclick="yech(this.id)"></div>
+          <div class="ban" id="4" onclick="yech(this.id)"></div>
+          <div class="ban" id="5" onclick="yech(this.id)"></div>
+          <div class="ban" id="6" onclick="yech(this.id)"></div>
+          <div class="ban" id="7" onclick="yech(this.id)"></div>
+          <div class="ban" id="8" onclick="yech(this.id)"></div>
+      </div>
+      <div class="content">
+          <div class="ban" id="9" onclick="yech(this.id)"></div>
+          <div class="ban" id="10" onclick="yech(this.id)"></div>
+          <div class="ban" id="11" onclick="yech(this.id)"></div>
+          <div class="ban" id="12" onclick="yech(this.id)"></div>
+          <div class="ban" id="13" onclick="yech(this.id)"></div>
+          <div class="ban" id="14" onclick="yech(this.id)"></div>
+          <div class="ban" id="15" onclick="yech(this.id)"></div>
+          <div class="ban" id="16" onclick="yech(this.id)"></div>
+      </div>
+      <div class="content">
+          <div class="ban" id="17" onclick="yech(this.id)"></div>
+          <div class="ban" id="18" onclick="yech(this.id)"></div>
+          <div class="ban" id="19" onclick="yech(this.id)"></div>
+          <div class="ban" id="20" onclick="yech(this.id)"></div>
+          <div class="ban" id="21" onclick="yech(this.id)"></div>
+          <div class="ban" id="22" onclick="yech(this.id)"></div>
+          <div class="ban" id="23" onclick="yech(this.id)"></div>
+          <div class="ban" id="24" onclick="yech(this.id)"></div>
+      </div>
+      <div class="content">
+          <div class="ban" id="25" onclick="yech(this.id)"></div>
+          <div class="ban" id="26" onclick="yech(this.id)"></div>
+          <div class="ban" id="27" onclick="yech(this.id)"></div>
+          <div class="ban" id="28" onclick="yech(this.id)"></div>
+          <div class="ban" id="29" onclick="yech(this.id)"></div>
+          <div class="ban" id="30" onclick="yech(this.id)"></div>
+          <div class="ban" id="31" onclick="yech(this.id)"></div>
+          <div class="ban" id="32" onclick="yech(this.id)"></div>
+      </div>
+      <div class="content">
+          <div class="ban" id="33" onclick="yech(this.id)"></div>
+          <div class="ban" id="34" onclick="yech(this.id)"></div>
+          <div class="ban" id="35" onclick="yech(this.id)"></div>
+          <div class="ban" id="36" onclick="yech(this.id)"></div>
+          <div class="ban" id="37" onclick="yech(this.id)"></div>
+          <div class="ban" id="38" onclick="yech(this.id)"></div>
+          <div class="ban" id="39" onclick="yech(this.id)"></div>
+          <div class="ban" id="40" onclick="yech(this.id)"></div>
+      </div>
+      <div class="content">
+          <div class="ban" id="41" onclick="yech(this.id)"></div>
+          <div class="ban" id="42" onclick="yech(this.id)"></div>
+          <div class="ban" id="43" onclick="yech(this.id)"></div>
+          <div class="ban" id="44" onclick="yech(this.id)"></div>
+          <div class="ban" id="45" onclick="yech(this.id)"></div>
+          <div class="ban" id="46" onclick="yech(this.id)"></div>
+          <div class="ban" id="47" onclick="yech(this.id)"></div>
+          <div class="ban" id="48" onclick="yech(this.id)"></div>
+      </div>
+      <div class="content">
+          <div class="ban" id="49" onclick="yech(this.id)"></div>
+          <div class="ban" id="50" onclick="yech(this.id)"></div>
+          <div class="ban" id="51" onclick="yech(this.id)"></div>
+          <div class="ban" id="52" onclick="yech(this.id)"></div>
+          <div class="ban" id="53" onclick="yech(this.id)"></div>
+          <div class="ban" id="54" onclick="yech(this.id)"></div>
+          <div class="ban" id="55" onclick="yech(this.id)"></div>
+          <div class="ban" id="56" onclick="yech(this.id)"></div>
+      </div>
+      <div class="content">
+          <div class="ban" id="57" onclick="yech(this.id)"></div>
+          <div class="ban" id="58" onclick="yech(this.id)"></div>
+          <div class="ban" id="59" onclick="yech(this.id)"></div>
+          <div class="ban" id="60" onclick="yech(this.id)"></div>
+          <div class="ban" id="61" onclick="yech(this.id)"></div>
+          <div class="ban" id="62" onclick="yech(this.id)"></div>
+          <div class="ban" id="63" onclick="yech(this.id)"></div>
+          <div class="ban" id="64" onclick="yech(this.id)"></div>
+      </div>
+    </div>
+
   </body>
+  <script type="text/javascript" src="/javascripts/script.js"></script>
+  <script>
+    document.getElementById("start").addEventListener("click", (e) => {
+      document.getElementById("main").style.display = "none";
+      document.getElementById("wait").style.display = "block";
+    })
+    document.getElementById("back").addEventListener("click", (e) => {
+      document.getElementById("main").style.display = "block";
+      document.getElementById("wait").style.display = "none";
+    })
+  </script>
 </html>
