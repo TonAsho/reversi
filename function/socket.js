@@ -26,14 +26,36 @@ const chat = (server) => {
         if(gameCount%2 == 1) wait[0] = num;
     }) 
 
+    // マッチメイキング辞退
+    socket.on("back", () => {
+      let now = [];
+      for(let i = 0; i < wait.length; ++i)  {
+        if(wait[i] != socket.id) now.push(wait[i]);
+      }
+      wait = now;
+    })
+
     // 駒を打った
     socket.on("utu", (e) => {
         io.to(game.get(socket.id)).emit("getUtu", {id: e.id});
     })
 
+    // 試合終了
+    socket.on("finish", () => {
+      game.delete(socket.id);
+    })
+
     // 退出
     socket.on('disconnect', () => {
         userCount--;
+
+        //　マッチメイキング辞退
+        let now = [];
+        for(let i = 0; i < wait.length; ++i)  {
+          if(wait[i] != socket.id) now.push(wait[i]);
+        }
+        wait = now;
+        
         io.emit("userCount", (userCount));
     });
   });

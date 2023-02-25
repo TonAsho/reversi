@@ -1,11 +1,11 @@
 let field = [ // "1" is black, "-1" is white;
-    [0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0],
-    [0,0,0,-1,1,0,0,0],
-    [0,0,0,1,-1,0,0,0],
-    [0,0,0,0,0,0,0,0],
-    [0,0,0,0,0,0,0,0],
+    [1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1],
+    [1,1,1,1,1,1,1,1],
+    [1,1,1,-1,1,1,1,1],
+    [1,1,1,1,-1,0,0,0],
+    [0,0,1,0,0,0,0,0],
+    [0,0,0,1,0,0,0,0],
     [0,0,0,0,0,0,0,0],
 ];
 let turn = 1; // black
@@ -36,10 +36,10 @@ function yech(id) {
         getId(id).style.backgroundColor = "green";
         if(turn === 1) turn = -1;
         else turn = 1;
+        utu(id);
         can_turn = [], now = [];
         putMark();
         number++;
-        utu(id);
         if(number === 64) finish();
     }
     else {
@@ -137,6 +137,16 @@ function finish() {
         if(field[i][j] === 1) black++;
         else if(field[i][j] === -1) white++;
     }
-    alert("今から作る");
-    
+    alert("試合終了！！");
+    let b = 0, w = 0;
+    for(let i = 0; i < H; ++i) for(let j = 0; j < W; ++j) {
+        if(field[i][j] == 1) b++;
+        else if(field[i][j] == -1) w++;
+    }
+    if(b < w) alert(`黒${b}、白${w}で白の勝ち！！`);
+    else if(b > w) alert(`黒${b}、白${w}で黒の勝ち！！`);
+    else  alert(`黒${b}、白${w}で引き分け！！`);
+    socketFinish();
+    document.getElementById("main").style.display = "block";
+    document.getElementById("border").style.display = "none";
 }

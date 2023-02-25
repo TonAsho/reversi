@@ -5,6 +5,10 @@ socket.on("userCount", (cnt) => {
     document.getElementById("userCount").innerHTML = cnt;
 })
 
+// マッチメイキング辞退
+function back() {
+    socket.emit("back");
+}
 //　対戦相手が決まる
 socket.on("gameStart", (e) => {
     console.log("gameStart!!");
@@ -30,6 +34,11 @@ function getUtu(id) {
     yech(id);
     ok = false;
 }
+
+// 試合終了したときに、サーバーに知らせる
+function socketFinish() {
+    socket.emit("finish");
+}
 document.getElementById("start").addEventListener("click", (e) => {
     document.getElementById("main").style.display = "none";
     document.getElementById("wait").style.display = "block";
@@ -38,5 +47,5 @@ document.getElementById("start").addEventListener("click", (e) => {
 document.getElementById("back").addEventListener("click", (e) => {
     document.getElementById("main").style.display = "block";
     document.getElementById("wait").style.display = "none";
-
+    back();
 })
