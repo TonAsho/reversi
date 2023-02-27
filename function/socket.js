@@ -14,6 +14,7 @@ const chat = (server) => {
     //　マッチメイク
     socket.on("start", () => {
         wait.push(socket.id);
+        io.emit("waitingCount", {count : wait.length});
         for(let i = 0; i < wait.length - 1; ++i) {
             game.set(wait[i], wait[i + 1]);
             game.set(wait[i + 1], wait[i]);

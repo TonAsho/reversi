@@ -17,6 +17,7 @@ const moveW = [1, -1, 0, 0, 1, -1, -1, 1];
 let mark = [], his = [];
 let hh, ww, cnt, notPut = false, number = 4;
 let can_turn = [], now = []; // ひっくり返せる駒のID
+let bot = false;
 
 function yech(id) { 
     if(turn != s && !ok) {
@@ -36,11 +37,17 @@ function yech(id) {
         getId(id).style.backgroundColor = "green";
         if(turn === 1) turn = -1;
         else turn = 1;
-        utu(id);
+        if(!bot) utu(id);
         can_turn = [], now = [];
         putMark();
         number++;
         if(number === 64) finish();
+        if(bot && turn == -1) {
+            ok = true;
+            yech(mark[Math.floor(Math.random() * mark.length)]);
+            ok = false;
+        }
+        return ;
     }
     else {
         alert("そこには置けません！")
@@ -84,6 +91,7 @@ function changeColor() {
     });
 }
 function start() {
+    reset();
     document.getElementById("wait").style.display = "none";
     document.getElementById("border").style.display = "block";
     for(let i = 0; i < H; ++i) for(let j = 0; j < W; ++j) {
@@ -149,4 +157,38 @@ function finish() {
     socketFinish();
     document.getElementById("main").style.display = "block";
     document.getElementById("border").style.display = "none";
+    reset();
+}
+
+// ボットと対戦
+function botGame() {
+    document.getElementById("main").style.display = "none";
+    start();
+    bot = true;
+    alert("ランダムに置きます。負けたらオセロを引退しましょう。");
+}
+
+
+
+
+//　全情報のリセット
+function reset() {
+    field = [
+        [0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0],
+        [0,0,0,1,-1,0,0,0],
+        [0,0,0,-1,1,0,0,0],
+        [0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0],
+        [0,0,0,0,0,0,0,0]
+    ]
+    turn = 1;
+    s = 1;
+    ok = false;
+    H = 8, W = 8;
+    mark = [], his = [];
+    hh, ww, cnt, notPut = false, number = 4;
+    can_turn = [], now = [];
+    bot = false;
 }

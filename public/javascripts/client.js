@@ -21,6 +21,11 @@ socket.on("gameStart", (e) => {
     start();
 })
 
+//マッチング中の人数取得
+socket.on("waitingCount", (e) => {
+    document.getElementById("waitingCount").innerHTML = `${e.count}人が待機中`;
+})
+
 //　手を打つ
 function utu(id) {
     socket.emit("utu", {id: id});
