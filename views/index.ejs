@@ -37,7 +37,13 @@
             <div class="tooltip">Twitter</div>
             <span><i class="fab fa-twitter"></i></span>
           </div>
+      
       </div>
+      <% if(locals.username != undefined) {%>
+        <p><%= locals.username %>でログイン中です</p>
+      <% } else {%>
+        <p>ログインしていません</p>
+      <% } %>
       <p>入場者数: <span id="userCount">0</span>人</p>
     </div>
 

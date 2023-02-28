@@ -5,6 +5,8 @@ html {
   padding: 0;
   margin: 0;
   background-color: black;
+  font-family: Helvetica;
+  font-weight: 300;
 }
 .body{
   padding: 0;
