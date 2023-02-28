@@ -56,6 +56,14 @@ const chat = (server) => {
           if(wait[i] != socket.id) now.push(wait[i]);
         }
         wait = now;
+        // もし、試合中だったら負けにする
+        game.forEach((value, key) => {
+          if(value == socket.id) {
+            // valueが負けで、keyが勝ち
+            io.to(game.get(value)).emit("disconnectWin");
+            game.delete(value);
+          }
+        })
         
         io.emit("userCount", (userCount));
     });

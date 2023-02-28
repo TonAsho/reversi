@@ -414,3 +414,80 @@ button:hover::after, button:focus::after {
 .number {
   font-size: 30px;
 }   
+
+
+
+.button-37 {
+  height: 20%;
+  width: 50%;
+  position: absolute;
+  bottom: 13%;
+  right: 25%;
+background-color: #13aa52;
+border: 1px solid #13aa52;
+border-radius: 4px;
+box-shadow: rgba(0, 0, 0, .1) 0 2px 4px 0;
+box-sizing: border-box;
+color: #fff;
+cursor: pointer;
+font-family: "Akzidenz Grotesk BQ Medium", -apple-system, BlinkMacSystemFont, sans-serif;
+font-size: 16px;
+font-weight: 400;
+outline: none;
+outline: 0;
+padding: 10px 25px;
+text-align: center;
+transform: translateY(0);
+transition: transform 150ms, box-shadow 150ms;
+user-select: none;
+-webkit-user-select: none;
+touch-action: manipulation;
+}
+
+.button-37:hover {
+box-shadow: rgba(0, 0, 0, .15) 0 3px 9px 0;
+transform: translateY(-2px);
+}
+
+@media (min-width:60%) {
+.button-37 {
+  padding: 10px 30px;
+}
+}
+.non {
+  height: 30%;
+  width: 40%;
+  background-color: rgb(237, 242, 247);
+  box-shadow:
+      2.8px 2.8px 5.5px rgba(0, 0, 0, 0.042),
+      6.7px 6.7px 13.3px rgba(0, 0, 0, 0.061),
+      12.5px 12.5px 25px rgba(0, 0, 0, 0.075),
+      22.3px 22.3px 44.7px rgba(0, 0, 0, 0.089),
+      41.8px 41.8px 83.6px rgba(0, 0, 0, 0.108),
+      100px 100px 200px rgba(0, 0, 0, 0.15)
+  ;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  margin: auto;
+  text-align: center;
+}
+.alerts {
+  padding: 1%;
+  font-family: sans-serif;
+  font-size: clamp(15px, 2.9vw, 12px);
+  color: red;
+}
+.alert {
+  padding: 5%;
+  font-family: sans-serif;
+  font-size: clamp(16px, 2.9vw, 25px);
+}
+.con {
+  height: 100%;
+  width: 100%;
+  text-align: center;
+  justify-content: center;
+}

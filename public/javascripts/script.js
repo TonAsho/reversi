@@ -12,8 +12,7 @@ let turn = 1; // black
 let s = 1; //先手:１、　後手:-1
 let ok = false;
 let H = 8, W = 8;
-const moveH = [0, 0, 1, -1, 1, 1, -1, -1];
-const moveW = [1, -1, 0, 0, 1, -1, -1, 1];
+const moveH = [0, 0, 1, -1, 1, 1, -1, -1], moveW = [1, -1, 0, 0, 1, -1, -1, 1];
 let mark = [], his = [];
 let hh, ww, cnt, notPut = false, number = 4;
 let can_turn = [], now = []; // ひっくり返せる駒のID
@@ -21,7 +20,7 @@ let bot = false;
 
 function yech(id) { 
     if(turn != s && !ok) {
-        alert("相手の手番です！");
+        al("相手の手番です！");
         return;
     }
     let h = Math.floor(id / 8), w = id % 8;
@@ -39,9 +38,12 @@ function yech(id) {
         else turn = 1;
         if(!bot) utu(id);
         can_turn = [], now = [];
-        putMark();
         number++;
-        if(number === 64) finish();
+        if(number === 64) {
+            finish();
+            return;
+        }
+        putMark();
         if(bot && turn == -1) {
             ok = true;
             yech(mark[Math.floor(Math.random() * mark.length)]);
@@ -50,7 +52,7 @@ function yech(id) {
         return ;
     }
     else {
-        alert("そこには置けません！")
+        al("そこには置けません！")
     } 
 
 }
@@ -97,7 +99,9 @@ function start() {
     for(let i = 0; i < H; ++i) for(let j = 0; j < W; ++j) {
         let add = document.createElement("div");
         if(field[i][j] == 1) add.className = "black", get(i, j).appendChild(add);
-        if(field[i][j] == -1) add.className = "white", get(i, j).appendChild(add);
+        else if(field[i][j] == -1) add.className = "white", get(i, j).appendChild(add);
+        else get(i, j).innerHTML = "";
+        get(i, j).style.backgroundColor = "lightgreen";
     }
     putMark();
 }
@@ -126,9 +130,8 @@ function putMark() {
             finish();
             return;
         }
-        if(turn === 1) turn = -1;
-        else turn = 1;
-        alert("置けまへんので相手がパスしました！");
+        if(turn === 1) turn = -1, al("置けまへんので黒番がパスしました！");
+        else turn = 1, al("置けまへんので白番がパスしました！");;
         notPut = true;
         putMark();
     } else notPut = false;
@@ -139,21 +142,21 @@ function get(i, j) {
 function getId(id) {
     return document.getElementById(String(id));
 }
-function finish() {
+async function finish() {
     let black = 0, white = 0;
     for(let i = 0; i < H; ++i) for(let j = 0; j < W; ++j) {
         if(field[i][j] === 1) black++;
         else if(field[i][j] === -1) white++;
     }
-    alert("試合終了！！");
+    await al("試合終了！！");
     let b = 0, w = 0;
     for(let i = 0; i < H; ++i) for(let j = 0; j < W; ++j) {
         if(field[i][j] == 1) b++;
         else if(field[i][j] == -1) w++;
     }
-    if(b < w) alert(`黒${b}、白${w}で白の勝ち！！`);
-    else if(b > w) alert(`黒${b}、白${w}で黒の勝ち！！`);
-    else  alert(`黒${b}、白${w}で引き分け！！`);
+    if(b < w) await al(`黒${b}、白${w}で白の勝ち！！`);
+    else if(b > w) await al(`黒${b}、白${w}で黒の勝ち！！`);
+    else  await al(`黒${b}、白${w}で引き分け！！`);
     socketFinish();
     document.getElementById("main").style.display = "block";
     document.getElementById("border").style.display = "none";
@@ -165,11 +168,8 @@ function botGame() {
     document.getElementById("main").style.display = "none";
     start();
     bot = true;
-    alert("ランダムに置きます。負けたらオセロを引退しましょう。");
+    al("ランダムに置きます。負けたらオセロを引退しましょう。");
 }
-
-
-
 
 //　全情報のリセット
 function reset() {

@@ -13,12 +13,12 @@ function back() {
 socket.on("gameStart", (e) => {
     console.log("gameStart!!");
     // 先手か後手か
+    start();
     if(e.turn) {
         s = 1;
     } else {
         s = -1;
     }
-    start();
 })
 
 //マッチング中の人数取得
@@ -44,6 +44,16 @@ function getUtu(id) {
 function socketFinish() {
     socket.emit("finish");
 }
+
+// 通信切れ勝ち
+socket.on("disconnectWin", () => {
+    socketFinish();
+    al("相手との接続が切れました。あなたの勝ちです！")    
+    document.getElementById("main").style.display = "block";
+    document.getElementById("border").style.display = "none";
+    reset();
+})
+
 document.getElementById("start").addEventListener("click", (e) => {
     document.getElementById("main").style.display = "none";
     document.getElementById("wait").style.display = "block";

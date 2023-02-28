@@ -12,7 +12,6 @@
     <div class="main" id="main" style="display: block;">
       <div class="logo">
           <h1>Ram Othello</h1>
-          <p style="font-size: 15px;">ただいま使用できるサービスはオンライン対局のみとなっております。</p>
       </div>
       <div class="buttons">
           <div class="wrap" id="start">
@@ -141,8 +140,36 @@
       </div>
     </div>
 
+
+    <div id="non" class="non" style="display: none;">
+      <div class="con">
+          <div class="alerts">通知ダイアログ</div>
+          <div class="alert" id="alert"></div>
+          <button class="button-37" role="button" id="button">OK!</button>
+      </div>
+  </div>
+
+
   </body>
   <script type="text/javascript" src="/javascripts/script.js"></script>
   <script src="socket.io/socket.io.js"></script>
   <script type="text/javascript" src="/javascripts/client.js"></script>
+  <script>
+    // ダイアログを開く処理
+    const WaitForClick = () => new Promise(resolve => document.getElementById("button").addEventListener("click", (e) => {
+      resolve();
+    }));
+    async function al(e) {
+      getId("non").style.display = "flex";
+      getId("border").style.pointerEvents = "none";
+      getId("border").style.opacity = "0.5";
+      getId("alert").innerHTML = e;
+      console.log(e);
+      await WaitForClick();
+      console.log(e);
+      getId("non").style.display = "none";
+      getId("border").style.pointerEvents = "auto";
+      getId("border").style.opacity = "1.0";  
+    }
+  </script>
 </html>
