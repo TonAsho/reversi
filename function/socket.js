@@ -1,5 +1,7 @@
-const { encodePayload } = require('engine.io-parser');
 const { Server } = require('socket.io');
+
+var sqlite3 = require("sqlite3");
+var db = new sqlite3.Database("mydb.sqlite3");
 
 let userCount = 0;
 let wait = [];
@@ -42,8 +44,23 @@ const chat = (server) => {
     })
 
     // 試合終了
-    socket.on("finish", () => {
+    socket.on("finish", (obj) => {
       game.delete(socket.id);
+      db.serialize(() => {
+        db.all("select * from users", (err, rows) => {
+            rows.forEach(e => {
+                if(e.name == obj.name) {
+                  db.serialize(() => {
+                    if(e.win == 1) db.run("update users set win=? where id=?",e.win+1,e.id);
+                    else if(e.win == -1) db.run("update users set lose=? where id=?",e.lose+1,e.id);
+                    db.run("update users set total=? where id=?",e.total+1,e.id);
+                    return ;
+                  });
+                }
+            });
+            console.log(rows)
+        });
+      });
     })
 
     // 退出

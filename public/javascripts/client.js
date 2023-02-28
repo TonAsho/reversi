@@ -41,13 +41,14 @@ function getUtu(id) {
 }
 
 // 試合終了したときに、サーバーに知らせる
-function socketFinish() {
-    socket.emit("finish");
+function socketFinish(win, accountname) {
+    console.log(win, accountname);
+    socket.emit("finish", {win:win, name:accountname});
 }
 
 // 通信切れ勝ち
 socket.on("disconnectWin", () => {
-    socketFinish();
+    socketFinish(socketFinish(1, document.getElementById("logined").innerHTML));
     al("相手との接続が切れました。あなたの勝ちです！")    
     document.getElementById("main").style.display = "block";
     document.getElementById("border").style.display = "none";
@@ -55,6 +56,10 @@ socket.on("disconnectWin", () => {
 })
 
 document.getElementById("start").addEventListener("click", (e) => {
+    if(document.getElementById("logined").innerHTML == "") {
+        al("ログイン後に利用できます！");
+        return;
+    }
     document.getElementById("main").style.display = "none";
     document.getElementById("wait").style.display = "block";
     socket.emit("start");

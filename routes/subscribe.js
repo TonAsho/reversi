@@ -13,6 +13,10 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', (req, res, next) => {
+    if(req.session.username != undefined) {
+        res.redirect("/");
+        return;
+    }
     let name = req.body.name;
     let password = req.body.password;
     // db.run("insert into users (name, password) values (?,?)", req.body.name, req.body.password, (err) => {
@@ -27,10 +31,14 @@ router.post('/', (req, res, next) => {
                 }
             });
             if(flg) {
-                db.run("insert into users (name, password) values (?,?)", name, password);
-                req.session.username = name;
-                res.redirect("/");
-            } else res.render("subscribe", {flg:false});
+                db.serialize(() => {
+                    db.run("insert into users (name, password,win,lose,total,history) values (?,?,?,?,?,?)", name,password,0,0,0,"");
+                    req.session.username = name;
+                    res.redirect("/");
+                })
+            } else {
+                res.render("subscribe", {flg:false});
+            }
             console.log(rows);
         });
     });

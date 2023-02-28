@@ -8,6 +8,8 @@ var session = require("express-session");
 var indexRouter = require('./routes/index');
 var loginRouter = require('./routes/login');
 var subscribeRouter = require('./routes/subscribe');
+var mypageRouter = require('./routes/mypage');
+var logoutRouter = require('./routes/logout');
 
 var app = express();
 
@@ -28,11 +30,15 @@ app.use(session({
 
 app.use(function(req, res, next) {
   res.locals.username = req.session.username;
+  res.header("Access-Control-Allow-Origin","*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 })
 app.use('/', indexRouter);
 app.use('/login', loginRouter);
 app.use('/subscribe', subscribeRouter);
+app.use('/mypage', mypageRouter);
+app.use('/logout', logoutRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

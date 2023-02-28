@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ラムオセロ</title>
     <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <link href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" rel="stylesheet">
   </head>
   <body class="body">
@@ -42,9 +43,10 @@
       <% if(locals.username != undefined) {%>
         <p><%= locals.username %>でログイン中です</p>
       <% } else {%>
-        <p>ログインしていません</p>
+        <p><a href="/login">ログイン</a>していません</p>
       <% } %>
       <p>入場者数: <span id="userCount">0</span>人</p>
+      <p style="display: none;" id="logined"><%= locals.username %></p>
     </div>
 
     <div id="wait" class="wait" style="display: none;">
@@ -150,16 +152,25 @@
     <div id="non" class="non" style="display: none;">
       <div class="con">
           <div class="alerts">通知ダイアログ</div>
-          <div class="alert" id="alert"></div>
+          <div class="alert" id="alert"><a href="#" id="link"></a></div>
           <button class="button-37" role="button" id="button">OK!</button>
       </div>
   </div>
 
-
+  <div class="main" id="myPage" style="display: none;">
+    <div id="m_username"></div>
+    <div id="m_win"></div>
+    <div id="m_lose"></div>
+    <div id="m_wake"></div>
+    <div class="wrap">
+      <button class="button n2" style="margin: 6%;" onclick="backto()" >戻る</button>
+    </div>
+    <a href="/logout">ログアウト</a>
+  </div>
   </body>
-  <script type="text/javascript" src="/javascripts/script.js"></script>
   <script src="socket.io/socket.io.js"></script>
   <script type="text/javascript" src="/javascripts/client.js"></script>
+  <script type="text/javascript" src="/javascripts/script.js"></script>
   <script>
     // ダイアログを開く処理
     const WaitForClick = () => new Promise(resolve => document.getElementById("button").addEventListener("click", (e) => {
@@ -176,6 +187,35 @@
       getId("non").style.display = "none";
       getId("border").style.pointerEvents = "auto";
       getId("border").style.opacity = "1.0";  
+    }
+  </script>
+  <script>
+    //　マイページ
+    function userPage() {
+       document.getElementById("main").style.display = "none";
+       document.getElementById("myPage").style.display = "block";
+       $.ajax({
+          async: false,
+              url: 'http://localhost:3000/mypage',
+          type: 'post',
+          dataType: 'json'
+                }).done(function(res){
+                  if(!Object.keys(res).length) {
+                    al("ログインしてください！");
+                    backto();
+                  } else {
+                    document.getElementById("m_username").innerHTML = res.name;
+                    document.getElementById("m_win").innerHTML = res.win;
+                    document.getElementById("m_lose").innerHTML = res.lose;
+                    document.getElementById("m_wake").innerHTML = res.total - res.win - res.lose;
+                  }
+                }).fail(function(xhr, status, error){
+                   alert("えらーーーーーーーーーーーーらーーらーらーー");
+                });
+    }
+    function backto() {
+      document.getElementById("main").style.display = "block";
+      document.getElementById("myPage").style.display = "none";
     }
   </script>
 </html>

@@ -14,7 +14,11 @@ router.get('/', function(req, res, next) {
   }
 });
 
-router.post('/', (req, res, next) => {
+router.post('/', (req, res, next) => {  
+  if(req.session.username != undefined) {
+    res.redirect("/");
+    return;
+  }
   let name = req.body.name;
   let password = req.body.password;
   let flg = false;

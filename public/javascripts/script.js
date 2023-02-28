@@ -2,8 +2,8 @@ let field = [ // "1" is black, "-1" is white;
     [0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0],
-    [0,0,0,1,-1,0,0,0],
     [0,0,0,-1,1,0,0,0],
+    [0,0,0,1,-1,0,0,0],
     [0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0],
     [0,0,0,0,0,0,0,0],
@@ -154,10 +154,14 @@ async function finish() {
         if(field[i][j] == 1) b++;
         else if(field[i][j] == -1) w++;
     }
+    if(!bot) {
+        if((s==1&&b>w)||(s==-1&&w>b)) socketFinish(1, document.getElementById("logined").innerHTML);
+        else if((s==-1&&b>w)||(s==1&&w>b)) socketFinish(-1, document.getElementById("logined").innerHTML);
+        else socketFinish(0, document.getElementById("logined").innerHTML);
+    }
     if(b < w) await al(`黒${b}、白${w}で白の勝ち！！`);
     else if(b > w) await al(`黒${b}、白${w}で黒の勝ち！！`);
     else  await al(`黒${b}、白${w}で引き分け！！`);
-    socketFinish();
     document.getElementById("main").style.display = "block";
     document.getElementById("border").style.display = "none";
     reset();
