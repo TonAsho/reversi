@@ -25,6 +25,9 @@ router.post('/', (req, res, next) => {
   db.serialize(() => {
       db.all("select * from users", (err, rows) => {
           rows.forEach(e => {
+            // db.run("update users set win=? where id=?",0,e.id);
+            // db.run("update users set lose=? where id=?",0,e.id);
+            // db.run("update users set total=? where id=?",0,e.id);
               if(e.name == name && e.password == password) {
                   flg = true;
               }
@@ -36,6 +39,7 @@ router.post('/', (req, res, next) => {
           } else {
             res.render("login", {flg:false});
           }
+          console.log(rows);
       });
   });
 });

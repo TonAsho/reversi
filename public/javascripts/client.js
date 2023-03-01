@@ -5,6 +5,9 @@ socket.on("userCount", (cnt) => {
     document.getElementById("userCount").innerHTML = cnt;
 })
 
+//　名前の送信
+socket.emit("name", {name : document.getElementById("logined").innerHTML});
+
 // マッチメイキング辞退
 function back() {
     socket.emit("back");
