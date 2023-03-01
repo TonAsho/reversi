@@ -51,8 +51,8 @@ function socketFinish(win, accountname) {
 
 // 通信切れ勝ち
 socket.on("disconnectWin", () => {
-    socketFinish(socketFinish(1, document.getElementById("logined").innerHTML));
-    al("相手との接続が切れました。あなたの勝ちです！")    
+    socket.emit("finish", {win:1, name:document.getElementById("logined").innerHTML});
+    al("相手との接続が切れました。あなたの勝ちです！");
     document.getElementById("main").style.display = "block";
     document.getElementById("border").style.display = "none";
     reset();

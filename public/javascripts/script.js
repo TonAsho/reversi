@@ -17,6 +17,7 @@ let mark = [], his = [];
 let hh, ww, cnt, notPut = false, number = 4;
 let can_turn = [], now = []; // ひっくり返せる駒のID
 let bot = false;
+let history = []; // 記録する
 
 function yech(id) { 
     if(turn != s && !ok) {
@@ -38,6 +39,7 @@ function yech(id) {
         else turn = 1;
         if(!bot) utu(id);
         can_turn = [], now = [];
+        history.push(id);
         number++;
         if(number === 64) {
             finish();
@@ -46,7 +48,9 @@ function yech(id) {
         putMark();
         if(bot && turn == -1) {
             ok = true;
-            yech(mark[Math.floor(Math.random() * mark.length)]);
+            let p = Math.floor(Math.random() * mark.length);
+            yech(mark[p]);
+            history.push(p);
             ok = false;
         }
         return ;
@@ -175,6 +179,11 @@ function botGame() {
     al("ランダムに置きます。負けたらオセロを引退しましょう。");
 }
 
+// 棋譜再生
+function review() {
+    
+}
+
 //　全情報のリセット
 function reset() {
     field = [
@@ -195,4 +204,5 @@ function reset() {
     hh, ww, cnt, notPut = false, number = 4;
     can_turn = [], now = [];
     bot = false;
+    history = [];
 }

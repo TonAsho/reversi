@@ -57,7 +57,7 @@ const chat = (server) => {
             rows.forEach(e => {
                 if(e.name == obj.name) {
                   db.serialize(() => {
-                    if(obj.win == 1) db.run("update users set win=? where id=?",e.win+1,e.id);
+                    if(obj.win == 1) db.run("update users set win=? where id=?",e.win+1,e.id)
                     else if(obj.win == -1) db.run("update users set lose=? where id=?",e.lose+1,e.id);
                     db.run("update users set total=? where id=?",e.total+1,e.id);
                     return ;
