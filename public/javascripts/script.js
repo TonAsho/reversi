@@ -14,10 +14,12 @@ let ok = false;
 let H = 8, W = 8;
 const moveH = [0, 0, 1, -1, 1, 1, -1, -1], moveW = [1, -1, 0, 0, 1, -1, -1, 1];
 let mark = [], his = [];
-let hh, ww, cnt, notPut = false, number = 4;
 let can_turn = [], now = []; // ひっくり返せる駒のID
+let hh, ww, cnt, notPut = false, number = 4;
 let bot = false;
 let history = []; // 記録する
+let monte_field; let last_time = false;
+monte_reset();
 
 function yech(id) { 
     if(turn != s && !ok) {
@@ -32,28 +34,44 @@ function yech(id) {
     // ひっくり返す
     if(change(h, w)) {
         if(his.length > 0) getId(his[his.length-1]).style.backgroundColor = "lightgreen";
-        delMark(), can_turn.push(id), changeColor();
+        delMark(), can_turn.push(id), changeColor();getId(id).style.backgroundColor = "green";
         his.push(id);
-        getId(id).style.backgroundColor = "green";
-        if(turn === 1) turn = -1;
-        else turn = 1;
+        if(turn === 1) turn = -1;else turn = 1;
         if(!bot) utu(id);
-        can_turn = [], now = [];
-        history.push(id);
+        can_turn = [];
         number++;
         if(number === 64) {
             finish();
             return;
         }
         putMark();
-        if(bot && turn == -1) {
-            ok = true;
-            let p = Math.floor(Math.random() * mark.length);
-            yech(mark[p]);
-            history.push(p);
-            ok = false;
-        }
-        return ;
+        setTimeout(() => {
+            if(bot && turn == -1) {
+                let x = -10000, p = 0;
+                let turns;
+                if(turn == 1) turns = 1;
+                else turns = -1;
+                for(let i = 0; i < mark.length; ++i) {
+                    let x_cnt = 0;
+                    for(let j = 0; j < 1000; ++j) {
+                        monte_reset();
+                        turn = turns;
+                        monte_put(mark[i]);
+                        if(monte() == true) x_cnt+=1;
+                    }
+                    if(x_cnt > x) {
+                        x = x_cnt;
+                        p = i;
+                    }
+                }
+                turn = turns;
+                ok = true;
+                yech(mark[p]);
+                ok = false;
+            }
+            return ;       
+        }, 400);
+ 
     }
     else {
         al("そこには置けません！")
@@ -125,7 +143,7 @@ function putMark() {
             add.className = "banMark";
             get(i, j).appendChild(add);
         }
-        can_turn = [], now = [];
+        can_turn = [];
     }
     if(mark.length === 0) {
         if(notPut) {
@@ -179,6 +197,99 @@ function botGame() {
     al("ランダムに置きます。負けたらオセロを引退しましょう。");
 }
 
+// オセロAI：モンテカルロ法
+// monte_fieldに状態を入れておけば対局してくれます。
+function monte() {
+    let ava = []; // 今置ける場所
+    for(let i = 0; i < H; ++i) for(let j = 0; j < W; ++j) {
+        if(monte_field[i][j] != 0) continue;
+        if(monte_change(i, j)) {
+            ava.push(8 * i + (j + 1));
+        }
+        can_turn = [];
+    }
+    // 終了する場合
+    if(ava.length == 0) {
+        if(last_time) {
+            // 終わりです。
+            let b = 0, w = 0;
+            for(let i = 0; i < H; ++i) for(let j = 0; j < W; ++j) {
+                if(monte_field[i][j] == 1) b++;
+                if(monte_field[i][j] == -1) w++;
+            }
+            monte_reset();
+            if(w > b) return true;
+            else return false;
+        }
+        if(turn == 1) turn = -1;else turn = 1;
+        last_time = true;
+        return monte();
+    } else {
+        last_time = false;
+    }
+    // モンテカルロ法
+    let ram = Math.floor(Math.random() * ava.length);
+    monte_put(ava[ram]);
+    if(turn == 1) turn = -1;else turn = 1;
+    return monte();
+}
+function monte_put(e) {
+    let h = Math.floor(e / 8), w = e % 8;if(w === 0) w = 8, h--;
+    w--;
+    monte_change(h, w);
+    can_turn.push(e);
+    can_turn.forEach(element => {
+        h = Math.floor(element / 8), w = element % 8;if(w === 0) w = 8, h--;w--;
+        monte_field[h][w] = turn;
+    })
+    can_turn = [];
+}
+function monte_change(h, w) {
+    for(let i = 0; i < 8; ++i) {
+        hh = h, ww = w;
+        cnt = 0;
+        if(monte_f(moveH[i], moveW[i])) {
+            now.forEach(element => {
+                can_turn.push(element);
+            });
+        }
+        now = [];
+    }
+    return (can_turn.length > 0);
+}
+function monte_f(h, w) {
+    hh += h, ww += w;
+    if(hh < 0 || hh >= H || ww < 0 || ww >= W) return false;
+    if(turn + monte_field[hh][ww] == 0) {
+        cnt++;
+        now.push(8 * hh + (ww + 1));
+        return monte_f(h, w);
+    } else if(turn == monte_field[hh][ww]) {
+        if(cnt > 0) return true;
+        else return false;
+    }
+}
+
+// monte_fieldにfieldの値を渡す
+function monte_reset() {
+    monte_field = [ // "1" is black, "-1" is white;
+    [0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0],
+    [0,0,0,-1,1,0,0,0],
+    [0,0,0,1,-1,0,0,0],
+    [0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0],
+    [0,0,0,0,0,0,0,0],
+    ];
+    for(let i = 0; i < H; ++i) for(let j = 0; j < W; ++j) {
+        if(field[i][j] == 1) monte_field[i][j] = 1;
+        if(field[i][j] == -1) monte_field[i][j] = -1;
+        if(field[i][j] == 0) monte_field[i][j] = 0;
+    }
+    last_time = false;
+}
+
 // 棋譜再生
 function review() {
     
@@ -205,4 +316,5 @@ function reset() {
     can_turn = [], now = [];
     bot = false;
     history = [];
+    monte_reset();
 }
