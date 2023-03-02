@@ -16,8 +16,9 @@ router.post('/',function(req, res){
     db.serialize(() => {
       db.all("select * from users", (err, rows) => {
           rows.forEach(e => {
-              if(e.name == name) {
-                res.send(JSON.stringify(e));
+            let x = JSON.parse(e.user);
+              if(x.name == name) {
+                res.send(x);
                 return ;
               }
           });

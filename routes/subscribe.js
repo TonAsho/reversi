@@ -26,13 +26,14 @@ router.post('/', (req, res, next) => {
     db.serialize(() => {
         db.all("select * from users", (err, rows) => {
             rows.forEach(e => {
-                if(e.name == name) {
+                let x = JSON.parse(e.user);
+                if(x.name == name) {
                     flg = false;
                 }
             });
             if(flg) {
                 db.serialize(() => {
-                    db.run("insert into users (name, password,win,lose,total,history) values (?,?,?,?,?,?)", name,password,0,0,0,"");
+                    db.run("insert into users (user) values(?);",`{"name":"${name}","password":"${password}","win":0,"lose":0,"total":0,"history":[]}`);
                     req.session.username = name;
                     res.redirect("/");
                 })

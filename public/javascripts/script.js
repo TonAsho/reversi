@@ -19,9 +19,11 @@ let hh, ww, cnt, notPut = false, number = 4;
 let bot = false;
 let history = []; // 記録する
 let monte_field; let last_time = false;
+let kihu_now = false, kihu_ok = false, kihu_edi = false;
+let aite_name = "";
 monte_reset();
 
-function yech(id) { 
+function yech(id) {
     if(turn != s && !ok) {
         al("相手の手番です！");
         return;
@@ -33,6 +35,16 @@ function yech(id) {
     // おいてとれるか
     // ひっくり返す
     if(change(h, w)) {
+        if(kihu_now) {
+            if(!kihu_ok && !kihu_edi) {
+                // 編集開始
+                document.getElementById("kihu_finish_edi").style.display = "block";
+                kihu_edi = true;
+                al("編集を開始します。バグるので優しく扱ってください。");
+                document.getElementById("kihu_next").style.pointerEvents = "none";
+                document.getElementById("kihu_back").style.pointerEvents = "none";
+            }
+        }
         if(his.length > 0) getId(his[his.length-1]).style.backgroundColor = "lightgreen";
         delMark(), can_turn.push(id), changeColor();getId(id).style.backgroundColor = "green";
         his.push(id);
@@ -44,16 +56,23 @@ function yech(id) {
             finish();
             return;
         }
-        putMark();
-        setTimeout(() => {
-            if(bot && turn == -1) {
+        putMark();            
+        if(bot && turn == -1) {
+            setTimeout(() => {
                 let x = -10000, p = 0;
                 let turns;
                 if(turn == 1) turns = 1;
                 else turns = -1;
                 for(let i = 0; i < mark.length; ++i) {
                     let x_cnt = 0;
-                    for(let j = 0; j < 1000; ++j) {
+                    let one = 1000, two = 1000;
+                    if(mark.length <= 1) one = 1000;
+                    else if(mark.length <= 2) one = 5000;
+                    else if(mark.length <= 4) one = 2000;
+                    if(number <= 20) two = 1000;
+                    else if(number <= 35) two = 2000;
+                    else two = 3000;
+                    for(let j = 0; j < Math.max(one, two); ++j) {
                         monte_reset();
                         turn = turns;
                         monte_put(mark[i]);
@@ -68,10 +87,9 @@ function yech(id) {
                 ok = true;
                 yech(mark[p]);
                 ok = false;
-            }
-            return ;       
-        }, 400);
- 
+                return ;
+            }, 400);
+        }
     }
     else {
         al("そこには置けません！")
@@ -118,11 +136,15 @@ function start() {
     reset();
     document.getElementById("wait").style.display = "none";
     document.getElementById("border").style.display = "block";
+    document.getElementById("time1").style.display = "block";
+    document.getElementById("time2").style.display = "block";
+    document.getElementById("p2").innerHTML = document.getElementById("logined").innerHTML;
+    document.getElementById("p1").innerHTML = aite_name;
     for(let i = 0; i < H; ++i) for(let j = 0; j < W; ++j) {
         let add = document.createElement("div");
+        get(i, j).innerHTML = "";
         if(field[i][j] == 1) add.className = "black", get(i, j).appendChild(add);
         else if(field[i][j] == -1) add.className = "white", get(i, j).appendChild(add);
-        else get(i, j).innerHTML = "";
         get(i, j).style.backgroundColor = "lightgreen";
     }
     putMark();
@@ -153,7 +175,8 @@ function putMark() {
             return;
         }
         if(turn === 1) turn = -1, al("置けまへんので黒番がパスしました！");
-        else turn = 1, al("置けまへんので白番がパスしました！");;
+        else turn = 1, al("置けまへんので白番がパスしました！");
+        his.push("pass");
         notPut = true;
         putMark();
     } else notPut = false;
@@ -165,7 +188,6 @@ function getId(id) {
     return document.getElementById(String(id));
 }
 async function finish() {
-    let black = 0, white = 0;
     for(let i = 0; i < H; ++i) for(let j = 0; j < W; ++j) {
         if(field[i][j] === 1) black++;
         else if(field[i][j] === -1) white++;
@@ -186,6 +208,8 @@ async function finish() {
     else  await al(`黒${b}、白${w}で引き分け！！`);
     document.getElementById("main").style.display = "block";
     document.getElementById("border").style.display = "none";
+    document.getElementById("time1").style.display = "none";
+    document.getElementById("time2").style.display = "none";
     reset();
 }
 
@@ -194,7 +218,7 @@ function botGame() {
     document.getElementById("main").style.display = "none";
     start();
     bot = true;
-    al("ランダムに置きます。負けたらオセロを引退しましょう。");
+    al("モンテカルロ法によるオセロAIです。強さは分かりません。");
 }
 
 // オセロAI：モンテカルロ法
@@ -290,9 +314,64 @@ function monte_reset() {
     last_time = false;
 }
 
-// 棋譜再生
+// 棋譜rの棋譜再生
+let r = {history:['44', '27', '20', '11', '21', '38', "pass", '30', '35', '45', '52', '43', '34', '19', '12', '5', '46', '51', '42', '53', '54', '62', '59'], sente:"Toncochan", gote:"KatukiSaikyou"};
+let it = -1;
 function review() {
-    
+    document.getElementById("kihu_next").style.display = "block";
+    document.getElementById("kihu_back").style.display = "block";
+    document.getElementById("myPage").style.display = "none";
+    start();
+    document.getElementById("p2").innerHTML = r.sente;
+    document.getElementById("p1").innerHTML = r.gote;
+    ok = true;
+    kihu_now = true;
+    it = -1;
+}
+function kihu_next() {
+    if(it+1 >= r.history.length) {
+        let b = 0, w = 0;
+        for(let i = 0; i < H; ++i) for(let j = 0; j < W; ++j) {
+            if(field[i][j] == 1) b++;
+            if(field[i][j] == -1) w++;
+        }
+        if(b < w) al(`黒${b}、白${w}で白の勝ち！！`);
+        else if(b > w) al(`黒${b}、白${w}で黒の勝ち！！`);
+        else  al(`黒${b}、白${w}で引き分け！！`);
+        return ;
+    }
+    it++;
+    if(r.history[it] == "pass") return;
+    kihu_ok = true;
+    yech(r.history[it]);
+    kihu_ok = false;
+}
+function kihu_back() {
+    if(it == -1) return ;
+    let x = it;
+    review();
+    it = -1;
+    for(let i = -1; i < x-1; ++i) {
+        kihu_next();
+    }
+    it = x-1;
+}
+function kihu_finish_edi() {
+    kihu_edi = false;
+    kihu_back();
+    document.getElementById("kihu_next").style.pointerEvents = "";
+    document.getElementById("kihu_back").style.pointerEvents = "";
+    document.getElementById("kihu_finish_edi").style.display = "none";
+    return ;
+}
+function kihu_finish() {
+    reset();
+    document.getElementById("kihu_next").style.display = "none";
+    document.getElementById("kihu_back").style.display = "none";
+    document.getElementById("myPage").style.display = "block";
+    document.getElementById("border").style.display = "none";
+    document.getElementById("time1").style.display = "none";
+    document.getElementById("time2").style.display = "none";
 }
 
 //　全情報のリセット
@@ -317,4 +396,5 @@ function reset() {
     bot = false;
     history = [];
     monte_reset();
+    kihu_now = false, kihu_ok = false, kihu_edi = false;
 }

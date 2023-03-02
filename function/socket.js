@@ -26,14 +26,14 @@ const chat = (server) => {
         for(let i = 0; i < wait.length - 1; ++i) {
             game.set(wait[i], wait[i + 1]);
             game.set(wait[i + 1], wait[i]);
-            io.to(wait[i]).emit("gameStart", {turn : true});
-            io.to(wait[i + 1]).emit("gameStart", {turn : false});
+            io.to(wait[i]).emit("gameStart", {turn : true, aite_name : name.get(wait[i+1])});
+            io.to(wait[i + 1]).emit("gameStart", {turn : false, aite_name : name.get(wait[i])});
             i++;
         }
         let num = wait[wait.length - 1], gameCount = wait.length;
         wait = [];
         if(gameCount%2 == 1) wait[0] = num;
-    }) 
+    });
 
     // マッチメイキング辞退
     socket.on("back", () => {
@@ -53,18 +53,25 @@ const chat = (server) => {
     socket.on("finish", (obj) => {
       game.delete(socket.id);
       db.serialize(() => {
+        db.run("insert into history (history) values (?)", `{"history":"${obj.history}", "sente":"${obj.sente}", "gote":"${obj.gote}"}`);
+        let id = 0;
+        db.all("select * from history", (err, result) => {
+          id = JSON.parse(result[result.size() - 1]).id;
+        })
         db.all("select * from users", (err, rows) => {
-            rows.forEach(e => {
-                if(e.name == obj.name) {
-                  db.serialize(() => {
-                    if(obj.win == 1) db.run("update users set win=? where id=?",e.win+1,e.id)
-                    else if(obj.win == -1) db.run("update users set lose=? where id=?",e.lose+1,e.id);
-                    db.run("update users set total=? where id=?",e.total+1,e.id);
-                    return ;
-                  });
-                }
-            });
-            console.log(rows)
+          rows.forEach(e => {
+            let x = JSON.parse(e.user);
+              if(x.name == obj.name) {
+                db.serialize(() => {
+                  if(obj.win == 1) x.win++;
+                  else if(obj.win == -1) x.lose++;
+                  x.total++;
+                  x.history.push(id);
+                  db.run("update users set user=? where id=?",x,e.id);
+                  return ;
+                });
+              }
+          });
         });
       });
     })
@@ -85,17 +92,22 @@ const chat = (server) => {
             // valueが負けで、keyが勝ち
             io.to(game.get(value)).emit("disconnectWin");
             game.delete(value);
-            db.all("select * from users", (err, rows) => {
-            rows.forEach(e => {
-                  if(e.name == name.get(value)) {
-                    db.serialize(() => {
-                      db.run("update users set lose=? where id=?",e.lose+1,e.id);
-                      db.run("update users set total=? where id=?",e.total+1,e.id);
-                      name.delete(value);
-                    })
-                  }
-              });
-            });
+            db.serialize(() => {
+              db.all("select * from users", (err, rows) => {
+                rows.forEach(e => {
+                      let x = JSON.parse(e.user);
+                      if(x.name == name.get(value)) {
+                        db.serialize(() => {
+                          x.total++;
+                          x.lose++;
+                          db.run("update users set user=? where id=?",x,e.id);
+                          name.delete(value);
+                        })
+                      }
+                  });
+                });
+            })
+
           }
         })
         io.emit("userCount", (userCount));

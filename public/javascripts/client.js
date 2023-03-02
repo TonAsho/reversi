@@ -15,13 +15,15 @@ function back() {
 //　対戦相手が決まる
 socket.on("gameStart", (e) => {
     console.log("gameStart!!");
-    // 先手か後手か
+    // 相手の名前
+    aite_name = e.aite_name;
     start();
+    // 先手か後手か
     if(e.turn) {
         s = 1;
     } else {
         s = -1;
-    }
+    }   
 })
 
 //マッチング中の人数取得
@@ -44,14 +46,13 @@ function getUtu(id) {
 }
 
 // 試合終了したときに、サーバーに知らせる
-function socketFinish(win, accountname) {
-    console.log(win, accountname);
-    socket.emit("finish", {win:win, name:accountname});
+function socketFinish(win, accountname, hiss, sente, gote) {
+    socket.emit("finish", {win:win, name:accountname, history:hiss,sente:sente,gote:gote});
 }
 
 // 通信切れ勝ち
 socket.on("disconnectWin", () => {
-    socket.emit("finish", {win:1, name:document.getElementById("logined").innerHTML});
+    socket.emit("finish", {win:1, name:document.getElementById("logined").innerHTML,history:history,sente:sente,gote:gote});
     al("相手との接続が切れました。あなたの勝ちです！");
     document.getElementById("main").style.display = "block";
     document.getElementById("border").style.display = "none";

@@ -263,7 +263,7 @@ border-radius: 50%;/*角丸*/
     background: linear-gradient(90deg, rgb(243, 165, 226) 0%, rgb(240, 90, 240) 100%);
     box-shadow: 12px 12px 24px rgb(230, 96, 230);
   }
-button::before {
+.button::before {
   content: '';
   border-radius: 1000px;
   min-width: 115%;
@@ -281,10 +281,10 @@ button::before {
   color: #313133;
   transform: translateY(-6px);
 }
-button:hover::before, button:focus::before {
+.button:hover::before, button:focus::before {
   opacity: 1;
 }
-button::after {
+.button::after {
   content: '';
   width: 30px; height: 30px;
   border-radius: 100%;
@@ -296,7 +296,7 @@ button::after {
   transform: translate(-50%, -50%);
   animation: ring 1.5s infinite;
 }
-button:hover::after, button:focus::after {
+.button:hover::after, button:focus::after {
   animation: none;
   display: none;
 }
@@ -492,4 +492,164 @@ transform: translateY(-2px);
   width: 100%;
   text-align: center;
   justify-content: center;
+}
+
+.time1 {   
+  position: absolute;
+  top:0;
+  right: 0;
+  left: 0;
+  margin: auto;
+  height: 7.5%;
+  width: 85vmin;
+  border-bottom: 0px black solid;
+  box-sizing: border-box;
+}
+.time2 {   
+  position: absolute;
+  bottom:0;
+  right: 0;
+  left: 0;
+  margin: auto;
+  height: 7.5%;
+  width: 85vmin;
+  border-bottom: 0px black solid;
+  box-sizing: border-box;
+  color: white;
+}
+.timer {
+  position: relative;
+  font-family: sans-serif;
+  height: 100%;
+  width: 25%;
+  background-color: black;
+  box-sizing: border-box;
+  font-size : clamp(1.25rem, 0.795rem + 2.27vw, 2.5rem);
+  text-align: center;
+}
+.timer2 {
+  position: absolute;
+  font-family: sans-serif;
+  right: 0;
+  height: 100%;
+  width: 25%;
+  background-color: black;
+  box-sizing: border-box;
+  font-size : clamp(1.25rem, 0.795rem + 2.27vw, 2.5rem);
+  text-align: center;
+}
+.now {
+  /* position:absolute;
+  top: 0%;
+  right: 0%;
+  left: 0%;
+  bottom: 0%;
+  margin: auto; */
+  padding: 5%;
+  color: white;
+}
+
+#kihu_back {
+  position: absolute;
+  left: 10%;
+  width: 20%;
+  height: 70%;
+}
+#kihu_next {
+  position: absolute;
+  left: 35%;
+  width: 20%;
+  height: 70%;
+}
+#kihu_finish_edi {
+  position: absolute;
+  top: 0;
+  right: 25%;
+  width: 20%;
+  height: 70%;
+}
+#kihu_finish {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 20%;
+  height: 70%;
+}
+
+.kihu_button {
+  position: relative;
+  display: inline-block;
+  padding: 10px 25px;
+  margin: .3em 0 1em 0;
+  width: 100%;
+  vertical-align: middle;
+  color: #fff;
+  font-size: 16px;
+  line-height: 20px;
+  -webkit-font-smoothing: antialiased;
+  text-align: center;
+  letter-spacing: 1px;
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid #3160B6;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.kihu_button:focus { outline: 0; }
+
+
+/* Button modifiers */
+
+.kihu_button {
+  background: #4a89dc;
+  text-shadow: 1px 1px 0 rgba(39, 110, 204, .5);
+}
+
+.kihu_button:hover { background: #357bd8; }
+
+
+/* Ripples container */
+
+.ripples {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: transparent;
+}
+
+
+/* Ripples circle */
+
+.ripplesCircle {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+}
+
+.ripples.is-active .ripplesCircle {
+  animation: ripples .4s ease-in;
+}
+
+
+/* Ripples animation */
+
+@keyframes ripples {
+  0% { opacity: 0; }
+
+  25% { opacity: 1; }
+
+  100% {
+    width: 200%;
+    padding-bottom: 200%;
+    opacity: 0;
+  }
 }

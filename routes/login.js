@@ -5,7 +5,24 @@ var sqlite3 = require("sqlite3");
 var db = new sqlite3.Database("mydb.sqlite3");
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {  
+router.get('/', function(req, res, next) {
+  // db.run("drop table users", (err) => {
+  //   if(err) {
+  //     console.error(err.message);
+  //   } else {
+  //     console.log("deleted succecfully");
+  //   }
+  // });
+  // db.run("CREATE TABLE history (id	INTEGER NOT NULL UNIQUE,history	JSON,PRIMARY KEY(id AUTOINCREMENT));", (err) => {
+  //   if(err) {
+  //     console.error(err.message);
+  //   } else {
+  //     console.log("made succecfully");
+  //   }
+  // });
+  // db.run("delete from users where id < 100;", (err) => {
+  //   if(err) console.error(err.message);
+  // });
   if(req.session.username != undefined) {
     res.redirect("/");
   }
@@ -23,15 +40,23 @@ router.post('/', (req, res, next) => {
   let password = req.body.password;
   let flg = false;
   db.serialize(() => {
-      db.all("select * from users", (err, rows) => {
+      // db.run('insert into users (user) values(?);','{"name":"b","password":"b","win":0,"lose":0,"total":0,"history":[]}', (err) => {
+      //   if(err) {
+      //     console.error(err.message);
+      //   } else {
+      //     console.log("added suceccfully");
+      //   }
+      // });  
+      // db.all("select * from users where id=3", (e, r) => {
+      //   let obj = JSON.parse(r[0].user);
+      //   console.log(obj);
+      // })
+      db.all(`select * from users`, (err, rows) => {
           rows.forEach(e => {
-            //　データベースの情報をリセットする！
-            // db.run("update users set win=? where id=?",0,e.id);
-            // db.run("update users set lose=? where id=?",0,e.id);
-            // db.run("update users set total=? where id=?",0,e.id);
-              if(e.name == name && e.password == password) {
-                  flg = true;
-              }
+            let x = JSON.parse(e.user);
+            if(x.name == name && x.password == password) {
+              flg = true;
+            }
           });
           if(flg) {
             // ログイン成功
@@ -40,7 +65,6 @@ router.post('/', (req, res, next) => {
           } else {
             res.render("login", {flg:false});
           }
-          console.log(rows);
       });
   });
 });
