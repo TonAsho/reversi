@@ -10,18 +10,15 @@ router.get('/', function(req, res, next) {
 });
 router.post('/',function(req, res){
   if(req.session.username == undefined) {
-    res.send({});
+    return res.send({});
   } else {
     let name = req.session.username;
-    db.serialize(() => {
-      db.all("select * from users", (err, rows) => {
-          rows.forEach(e => {
-            let x = JSON.parse(e.user);
-              if(x.name == name) {
-                res.send(x);
-                return ;
-              }
-          });
+    db.all("select * from users", (err, rows) => {
+      rows.forEach(e => {
+        let x = JSON.parse(e.user);
+          if(x.name == name) {
+            return res.send(x);
+          }
       });
     });
   }

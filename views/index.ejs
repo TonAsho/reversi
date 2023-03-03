@@ -70,7 +70,7 @@
           <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
         </button>
       </div>
-      <div id="kihu_finish" onclick="kihu_finish()">
+      <div id="kihu_finish" onclick="kihu_finish()" style="display: none;">
         <button type="button" class="kihu_button" style="background-color: red;">戻る
           <div class="ripples buttonRipples"><span class="ripplesCircle"></span></div>
         </button>
@@ -237,7 +237,7 @@
                     document.getElementById("m_wake").innerHTML = res.total - res.win - res.lose;
                   }
                 }).fail(function(xhr, status, error){
-                   alert("えらーーーーーーーーーーーーらーーらーらーー");
+                   alert("エラーです。情報を取得できませんでした。");
                 });
     }
     function backto() {

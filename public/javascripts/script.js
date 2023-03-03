@@ -45,7 +45,10 @@ function yech(id) {
                 document.getElementById("kihu_back").style.pointerEvents = "none";
             }
         }
-        if(his.length > 0) getId(his[his.length-1]).style.backgroundColor = "lightgreen";
+        if(his.length > 0) {
+            if(his[his.length-1] == "pass") getId(his[his.length-2]).style.backgroundColor = "lightgreen";
+            else getId(his[his.length-1]).style.backgroundColor = "lightgreen";
+        }
         delMark(), can_turn.push(id), changeColor();getId(id).style.backgroundColor = "green";
         his.push(id);
         if(turn === 1) turn = -1;else turn = 1;
@@ -188,10 +191,6 @@ function getId(id) {
     return document.getElementById(String(id));
 }
 async function finish() {
-    for(let i = 0; i < H; ++i) for(let j = 0; j < W; ++j) {
-        if(field[i][j] === 1) black++;
-        else if(field[i][j] === -1) white++;
-    }
     await al("試合終了！！");
     let b = 0, w = 0;
     for(let i = 0; i < H; ++i) for(let j = 0; j < W; ++j) {
@@ -199,9 +198,17 @@ async function finish() {
         else if(field[i][j] == -1) w++;
     }
     if(!bot) {
-        if((s==1&&b>w)||(s==-1&&w>b)) socketFinish(1, document.getElementById("logined").innerHTML);
-        else if((s==-1&&b>w)||(s==1&&w>b)) socketFinish(-1, document.getElementById("logined").innerHTML);
-        else socketFinish(0, document.getElementById("logined").innerHTML);
+        let my_name = document.getElementById("logined").innerHTML;
+        let sente=my_name, gote=aite_name;
+        if(s==-1) gote = my_name, sente = aite_name;
+        //勝った方が送る。
+        if(w > b) {
+            if(sente==my_name) socketFinish(1,history,sente,gote);
+        } else if(b > w) {
+            if(gote==my_name) socketFinish(-1,history,sente,gote);
+        } else {
+            if(s==1) socketFinish(0,history,sente,gote);
+        }
     }
     if(b < w) await al(`黒${b}、白${w}で白の勝ち！！`);
     else if(b > w) await al(`黒${b}、白${w}で黒の勝ち！！`);
@@ -320,6 +327,7 @@ let it = -1;
 function review() {
     document.getElementById("kihu_next").style.display = "block";
     document.getElementById("kihu_back").style.display = "block";
+    document.getElementById("kihu_finish").style.display = "block";
     document.getElementById("myPage").style.display = "none";
     start();
     document.getElementById("p2").innerHTML = r.sente;
@@ -372,6 +380,7 @@ function kihu_finish() {
     document.getElementById("border").style.display = "none";
     document.getElementById("time1").style.display = "none";
     document.getElementById("time2").style.display = "none";
+    document.getElementById("kihu_finish").style.display = "none";
 }
 
 //　全情報のリセット

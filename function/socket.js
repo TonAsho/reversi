@@ -51,28 +51,35 @@ const chat = (server) => {
 
     // 試合終了
     socket.on("finish", (obj) => {
-      game.delete(socket.id);
+      console.log(obj);
       db.serialize(() => {
-        db.run("insert into history (history) values (?)", `{"history":"${obj.history}", "sente":"${obj.sente}", "gote":"${obj.gote}"}`);
+        db.run("insert into histories (history) values(?);",`{"history":[${obj.history}],"sente":"${obj.sente}","gote":"${obj.gote}"}`);
         let id = 0;
-        db.all("select * from history", (err, result) => {
-          id = JSON.parse(result[result.size() - 1]).id;
-        })
+        db.all("select * from histories", (err, result) => {
+          let x = JSON.parse(JSON.stringify(result[result.length-1]));
+          id = x.id;
+        });
         db.all("select * from users", (err, rows) => {
           rows.forEach(e => {
             let x = JSON.parse(e.user);
-              if(x.name == obj.name) {
-                db.serialize(() => {
-                  if(obj.win == 1) x.win++;
-                  else if(obj.win == -1) x.lose++;
-                  x.total++;
-                  x.history.push(id);
-                  db.run("update users set user=? where id=?",x,e.id);
-                  return ;
-                });
+              if(x.name == obj.sente) {
+                if(obj.win == 1) x.win++;
+                else if(obj.win == -1) x.lose++;
+                x.total++;
+                x.history.push(id);
+                x = JSON.stringify(x);
+                db.run("update users set user=? where id=?",x,e.id);
+              } else if(x.name == obj.gote) {
+                if(obj.win == -1) x.win++;
+                else if(obj.win == 1) x.lose++;
+                x.total++;
+                x.history.push(id);
+                x = JSON.stringify(x);
+                db.run("update users set user=? where id=?",x,e.id);
               }
           });
         });
+        game.delete(socket.id);
       });
     })
 
@@ -92,21 +99,21 @@ const chat = (server) => {
             // valueが負けで、keyが勝ち
             io.to(game.get(value)).emit("disconnectWin");
             game.delete(value);
-            db.serialize(() => {
-              db.all("select * from users", (err, rows) => {
-                rows.forEach(e => {
-                      let x = JSON.parse(e.user);
-                      if(x.name == name.get(value)) {
-                        db.serialize(() => {
-                          x.total++;
-                          x.lose++;
-                          db.run("update users set user=? where id=?",x,e.id);
-                          name.delete(value);
-                        })
-                      }
-                  });
-                });
-            })
+            // db.serialize(() => {
+            //   db.all("select * from users", (err, rows) => {
+            //     rows.forEach(e => {
+            //           let x = JSON.parse(e.user);
+            //           if(x.name == name.get(value)) {
+            //             db.serialize(() => {
+            //               x.total++;
+            //               x.lose++;
+            //               db.run("update users set user=? where id=?",`${x}`,e.id);
+            //               name.delete(value);
+            //             })
+            //           }
+            //       });
+            //     });
+            // })
 
           }
         })

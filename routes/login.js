@@ -20,8 +20,9 @@ router.get('/', function(req, res, next) {
   //     console.log("made succecfully");
   //   }
   // });
-  // db.run("delete from users where id < 100;", (err) => {
+  // db.run("delete from users where id < 1000;", (err) => {
   //   if(err) console.error(err.message);
+  //   else console.log("deleted succecfully");
   // });
   if(req.session.username != undefined) {
     res.redirect("/");
@@ -59,7 +60,6 @@ router.post('/', (req, res, next) => {
             }
           });
           if(flg) {
-            // ログイン成功
               req.session.username = name;
               res.redirect("/");
           } else {

@@ -46,13 +46,17 @@ function getUtu(id) {
 }
 
 // 試合終了したときに、サーバーに知らせる
-function socketFinish(win, accountname, hiss, sente, gote) {
-    socket.emit("finish", {win:win, name:accountname, history:hiss,sente:sente,gote:gote});
+function socketFinish(win, hiss, sente, gote) {
+    socket.emit("finish", {win:win, history:hiss,sente:sente,gote:gote});
 }
 
 // 通信切れ勝ち
 socket.on("disconnectWin", () => {
-    socket.emit("finish", {win:1, name:document.getElementById("logined").innerHTML,history:history,sente:sente,gote:gote});
+    let win = 1;
+    let my_name = document.getElementById("logined").innerHTML;
+    let sente=my_name, gote=aite_name;
+    if(s==-1) gote = my_name, sente = aite_name, win = -1;
+    socket.emit("finish", {win:win,history:his,sente:sente,gote:gote});
     al("相手との接続が切れました。あなたの勝ちです！");
     document.getElementById("main").style.display = "block";
     document.getElementById("border").style.display = "none";
