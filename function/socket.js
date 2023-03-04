@@ -51,7 +51,6 @@ const chat = (server) => {
 
     // 試合終了
     socket.on("finish", (obj) => {
-      console.log(obj);
       db.serialize(() => {
         db.run("insert into histories (history) values(?);",`{"history":[${obj.history}],"sente":"${obj.sente}","gote":"${obj.gote}"}`);
         let id = 0;

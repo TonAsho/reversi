@@ -20,7 +20,11 @@ router.get('/', function(req, res, next) {
   //     console.log("made succecfully");
   //   }
   // });
-  // db.run("delete from users where id < 1000;", (err) => {
+  // db.run("delete from histories where id < 1000;", (err) => {
+  //   if(err) console.error(err.message);
+  //   else console.log("deleted succecfully");
+  // });
+  // db.run("delete from sqlite_sequence where name='histories';", (err) => {
   //   if(err) console.error(err.message);
   //   else console.log("deleted succecfully");
   // });

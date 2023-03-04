@@ -21,9 +21,11 @@ socket.on("gameStart", (e) => {
     // 先手か後手か
     if(e.turn) {
         s = 1;
+        document.getElementById("user_color1").style.display="block";
     } else {
         s = -1;
-    }   
+        document.getElementById("user_color2").style.display="block";
+    }
 })
 
 //マッチング中の人数取得
@@ -59,7 +61,9 @@ socket.on("disconnectWin", () => {
     socket.emit("finish", {win:win,history:his,sente:sente,gote:gote});
     al("相手との接続が切れました。あなたの勝ちです！");
     document.getElementById("main").style.display = "block";
-    document.getElementById("border").style.display = "none";
+    document.getElementById("border").style.display = "none";    
+    document.getElementById("time1").style.display = "none";
+    document.getElementById("time2").style.display = "none";
     reset();
 })
 

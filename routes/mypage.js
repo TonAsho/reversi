@@ -16,9 +16,23 @@ router.post('/',function(req, res){
     db.all("select * from users", (err, rows) => {
       rows.forEach(e => {
         let x = JSON.parse(e.user);
-          if(x.name == name) {
-            return res.send(x);
-          }
+        x.histories = [];
+        if(x.name == name) {
+          new Promise(resolve => {
+            if(x.history.length == 0) resolve();
+            for(let i = x.history.length - 1; i >= Math.max(x.history.length-5,0); i--) {
+              db.all("select * from histories where id=?",x.history[i], (err, result) => {
+                x.histories.push(result[0]);
+                if(i == Math.max(x.history.length-5,0)) {
+                  resolve();
+                }
+              })
+            }
+          })
+          .then(() => {
+            res.send(x);
+          });
+        }
       });
     });
   }
