@@ -5,7 +5,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require("express-session");
 var map = require("sitemap-generator");
-
+var fs = require('fs');
 var indexRouter = require('./routes/index');
 var loginRouter = require('./routes/login');
 var subscribeRouter = require('./routes/subscribe');
@@ -18,6 +18,10 @@ var app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
+app.get('/sitemap.xml', (req, res) => {
+  res.set('Content-Type', 'text/xml');
+  res.send( fs.readFileSync(require('path').resolve(__dirname, 'sitemap.xml'), "utf8"));
+});
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
