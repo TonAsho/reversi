@@ -213,7 +213,7 @@
        document.getElementById("myPage").style.display = "block";
        $.ajax({
           async: false,
-              url: 'http://localhost:3000/mypage',
+              url: 'https://ramothello.up.railway.app/mypage',
           type: 'post',
           dataType: 'json'
                 }).done(function(res){
@@ -234,7 +234,6 @@
                       newElement.id = element.id;
                       newElement.style.width = "20%"; newElement.style.margin = "5%"
                       let newE = document.createElement("h2");
-                      console.log(element);
                       let xx = JSON.parse(element.history);
                       newE.innerHTML = `${xx.sente} vs ${xx.gote}`;
                       let pa = document.createElement("div");pa.style.display="flex"; pa.style.justifyContent = "center";
