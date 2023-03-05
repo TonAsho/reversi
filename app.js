@@ -4,6 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var session = require("express-session");
+var map = require("sitemap-generator");
 
 var indexRouter = require('./routes/index');
 var loginRouter = require('./routes/login');
@@ -55,5 +56,19 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+// option
+const option = {lastMod: true};
+ 
+// create generator
+const generator = map("https://ramothello.up.railway.app/", option);
+ 
+// register event listeners
+generator.on("done", () => {
+  // sitemaps created
+});
+ 
+// start the crawler
+generator.start();
 
 module.exports = app;
